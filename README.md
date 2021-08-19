@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="150" height="150" src="https://github.com/charlyie/updatable-bashrc/blob/master/icon.png">
+  <img width="150" height="150" src="https://raw.githubusercontent.com/charlyie/updatable-bashrc/main/icon.png">
 </p>
 
 # Updatable-Bashrc
