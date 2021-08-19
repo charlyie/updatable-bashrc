@@ -6,7 +6,7 @@
 # You are not obligated to bundle the LICENSE file with your projects as long
 # as you leave these references intact in the header comments of your source files.
 
-UBRC_VERSION="1.0.0"
+UBRC_VERSION="1.1.0"
 UBRC_VERSION_BUILD="20210819"
 UBRC_REQUIRED_PACKAGES=( "curl" "jq" )
 UBRC_UPDATE_LOCKFILE="/tmp/.updatable-bashrc.update"
@@ -28,18 +28,30 @@ ubrc_version(){
 
 # Internal function : write text with color
 __ubrc_display(){
+    WHITE="\033[0;97m"
+    RED="\033[0;31m"
+    GREEN="\033[0;32m"
+    NC="\033[0m" # No Color
+    BOLD=$(tput bold)
+    NORMAL=$(tput sgr0)
+
     COLOR_OPEN_TAG=''
-    COLOR_CLOSE_TAG=$NC
+    COLOR_CLOSE_TAG=$NORMAL
     if [[ $2 == "green" ]]; then 
         COLOR_OPEN_TAG=$GREEN
     elif [[ $2 == "red" ]]; then
         COLOR_OPEN_TAG=$RED
-    elif [[ $2 == "blue" ]]; then
-        COLOR_OPEN_TAG=$LBLUE
+    elif [[ $2 == "white" ]]; then
+        COLOR_OPEN_TAG=$WHITE
     elif [[ $2 == "standard" ]]; then
-        COLOR_OPEN_TAG=$NC
+        COLOR_OPEN_TAG=$NORMAL
     fi
-    printf "${COLOR_OPEN_TAG}$1 ${COLOR_CLOSE_TAG}\n"
+    
+    STROUTPUT="${GREEN}${BOLD}[${NORMAL}Updatable-Bashrc${GREEN}${BOLD}]${NORMAL} $1"
+    if [[ $3 == "noprefix" ]]; then
+        STROUTPUT=$1
+    fi 
+    printf "${COLOR_OPEN_TAG}$STROUTPUT ${COLOR_CLOSE_TAG}\n"
 }
 
 
@@ -202,6 +214,8 @@ __ubrc_do_upgrade(){
         fi
     fi
 }
+
+__ubrc_display "Updatable-Bashrc configuration loaded."
 
 #Run System requirements check
 __ubrc_prerequisites
