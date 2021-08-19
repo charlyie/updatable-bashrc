@@ -8,9 +8,11 @@
 *Updatable-Bashrc is a .bashrc profile which can be upgraded through GIT releases. It brings multiple useful aliases and functions to save time. It can be customized by using overriding files locally which won't be upgraded on a further release.*
 
 
-## Usage
+## Installation
 
-Just checkout this GIT repo and replace your ~/.bashrc or /etc/bash.bashrc if you want all your linux users profit of this configuration.
+1. Just checkout this GIT repo and replace your `~/.bashrc` by the `.bashrc` from the GIT.
+2. If you want all your linux users profit of this configuration, replace `/etc/bash.bashrc` by the `.bashrc` from the GIT and remove `~/.bashrc` for each user.
+3. Copy also `.aliases.ubrc` and `.functions.ubrc` in the same folder you've paste the main `.bashrc` 
 
 ## File explanation
 
@@ -39,6 +41,21 @@ The daemon needs some packages such as :
 At first launch, it will try to install them automatically.
 
 The installation process has been successfully tested on Debian/Ubuntu distributions.
+
+
+## Updates
+
+The **Updatable-Bashrc** will check once a day if a newever version exists. You can manually upgrade this `.bashrc` by typing the command `ubrc_check_update`.
+```
+Checking for update... 
+No update required (remote version is : 1.0.0) 
+```
+
+You can check current version by typing `ubrc_version` :
+```
+Updatable-Bashrc v.1.0.0 (20210819). 
+(c) Charles Bourgeaux <charles@resmush.it> 2017-2021
+```
 
 ## Contributing
 

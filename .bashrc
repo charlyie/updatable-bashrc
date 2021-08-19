@@ -1,5 +1,5 @@
 #!/bin/bash
-# Updatable bashrc
+# Updatable-Bashrc
 #
 # The MIT License (MIT)
 # Copyright (c) 2017-2021 Charles Bourgeaux <charles@resmush.it> and contributors
@@ -7,7 +7,7 @@
 # as you leave these references intact in the header comments of your source files.
 
 UBRC_VERSION="1.0.0"
-UBRC_VERSION_BUILD="20210818"
+UBRC_VERSION_BUILD="20210819"
 UBRC_REQUIRED_PACKAGES=( "curl" "jq" )
 UBRC_UPDATE_LOCKFILE="/tmp/.updatable-bashrc.update"
 UBRC_APP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -22,7 +22,7 @@ ubrc_version(){
     if [[ $1 == "short" ]]; then 
         echo $UBRC_VERSION
     else
-        printf "Updatable-bashrc v.$UBRC_VERSION ($UBRC_VERSION_BUILD). \n(c) Charles Bourgeaux <charles@resmush.it> 2017-2021\n"
+        printf "Updatable-Bashrc v.$UBRC_VERSION ($UBRC_VERSION_BUILD). \n(c) Charles Bourgeaux <charles@resmush.it> 2017-2021\n"
     fi
 }
 
