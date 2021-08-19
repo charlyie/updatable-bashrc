@@ -198,9 +198,9 @@ __ubrc_do_upgrade(){
             __ubrc_display "> Extracting tarball..." standard notime
             tar xf /tmp/updatable-bashrc-last-release.tar.gz -C /tmp/updatable-bashrc-last-release
             __ubrc_display "> Replacing executable..." standard notime
-            cp /tmp/updatable-bashrc-last-release/*/.bashrc "$UBRC_APP"
-            cp /tmp/updatable-bashrc-last-release/*/.aliases.ubrc "$UBRC_ALIASES_APPEND"
-            cp /tmp/updatable-bashrc-last-release/*/.functions.ubrc "$UBRC_FUNCTIONS_APPEND"
+            yes |cp -r /tmp/updatable-bashrc-last-release/*/.bashrc "$UBRC_APP"
+            yes |cp -r /tmp/updatable-bashrc-last-release/*/.aliases.ubrc "$UBRC_ALIASES_APPEND"
+            yes |cp -r /tmp/updatable-bashrc-last-release/*/.functions.ubrc "$UBRC_FUNCTIONS_APPEND"
             if [[ ! -f "$UBRC_CUSTOM_APPEND" ]]; then
                 cp /tmp/updatable-bashrc-last-release/*/.custom.bashrc "$UBRC_CUSTOM_APPEND"
             fi
