@@ -67,6 +67,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ### Changelog
 
+* **1.1.1** [aug 2021] : Minor fix
 * **1.1.0** [aug 2021] : With prefix in string output
 * **1.0.0** [aug 2021] : A fully usable version
 * **0.1.0** [aug 2021] : A work in progress version began in 2017

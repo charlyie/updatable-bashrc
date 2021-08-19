@@ -6,7 +6,7 @@
 # You are not obligated to bundle the LICENSE file with your projects as long
 # as you leave these references intact in the header comments of your source files.
 
-UBRC_VERSION="1.1.0"
+UBRC_VERSION="1.1.1"
 UBRC_VERSION_BUILD="20210819"
 UBRC_REQUIRED_PACKAGES=( "curl" "jq" )
 UBRC_UPDATE_LOCKFILE="/tmp/.updatable-bashrc.update"
@@ -215,7 +215,7 @@ __ubrc_do_upgrade(){
     fi
 }
 
-__ubrc_display "Updatable-Bashrc configuration loaded."
+__ubrc_display "Configuration loaded."
 
 #Run System requirements check
 __ubrc_prerequisites
