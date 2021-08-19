@@ -47,7 +47,7 @@ __ubrc_display(){
         COLOR_OPEN_TAG=$NORMAL
     fi
     
-    STROUTPUT="${GREEN}${BOLD}[${NORMAL}Updatable-Bashrc${GREEN}${BOLD}]${NORMAL} $1"
+    STROUTPUT="${WHITE}${BOLD}[${NORMAL}Updatable-Bashrc${WHITE}${BOLD}]${NORMAL} $1"
     if [[ $3 == "noprefix" ]]; then
         STROUTPUT=$1
     fi 
