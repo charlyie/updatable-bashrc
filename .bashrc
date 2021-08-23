@@ -6,8 +6,8 @@
 # You are not obligated to bundle the LICENSE file with your projects as long
 # as you leave these references intact in the header comments of your source files.
 
-UBRC_VERSION="1.1.1"
-UBRC_VERSION_BUILD="20210819"
+UBRC_VERSION="1.1.2"
+UBRC_VERSION_BUILD="20210823"
 UBRC_REQUIRED_PACKAGES=( "curl" "jq" )
 UBRC_UPDATE_LOCKFILE="/tmp/.updatable-bashrc.update"
 UBRC_APP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -82,7 +82,7 @@ __ubrc_prerequisites() {
             elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
                 if [[ $(id -u) -ne 0 ]]; then
                   __ubrc_display "Package installation needs ROOT privileges. Please log as root or use sudo."
-                  exit 0
+                  exit 1
               fi
 
               if [ -n "$(command -v yum)" ]; then
@@ -90,27 +90,27 @@ __ubrc_prerequisites() {
                 sudo yum install "$x"
                 if ! which sudo > /dev/null || ! which apt-get > /dev/null; then
                   __ubrc_display "Cannot install package '$x' automatically. Please install it manually."
-                  exit 0
+                  exit 1
               fi
           elif [ -n "$(command -v apt-get)" ]; then
             sudo apt-get -qq update
             sudo apt-get -y -qq install "$x"
             if ! which sudo > /dev/null || ! which apt-get > /dev/null; then
               __ubrc_display "Cannot install package '$x' automatically. Please install it manually."
-              exit 0
+              exit 1
           fi
       else
         __ubrc_display "Unsupported Linux package manager. Try to install the package $x manually."
-        exit 0
+        exit 1
     fi
 else
     __ubrc_display "Unsupported platform. Try to install the package $x manually."
-    exit 0
+    exit 1
 fi
 
 else
     __ubrc_display "Some package are missing. Try to install them before."
-    exit 0
+    exit 1
 fi
 fi
 done
@@ -139,36 +139,36 @@ ubrc_check_update(){
     fi
 
     if [[ "$1" == "checklock" ]]; then 
-            # Perform update verification once a day
-            if [ -f ${UBRC_UPDATE_LOCKFILE} ]; then
-                _UBRC_UPDATE_LOCKFILE_VALUE=$(cat $UBRC_UPDATE_LOCKFILE)
+        # Perform update verification once a day
+        if [ -f ${UBRC_UPDATE_LOCKFILE} ]; then
+            _UBRC_UPDATE_LOCKFILE_VALUE=$(cat $UBRC_UPDATE_LOCKFILE)
 
-                if [[ $_UBRC_UPDATE_LOCKFILE_VALUE == "false" ]]; then
-                    if [[ $(find "${UBRC_UPDATE_LOCKFILE}" -mtime -1 -print) ]]; then
-                        return
-                    fi
-                else
-                    __ubrc_display "An update is available. Launching upgrade..." blue
-                    __ubrc_do_upgrade
+            if [[ $_UBRC_UPDATE_LOCKFILE_VALUE == "false" ]]; then
+                if [[ $(find "${UBRC_UPDATE_LOCKFILE}" -mtime -1 -print) ]]; then
                     return
                 fi
+            else
+                __ubrc_display "An update is available. Launching upgrade..." blue
+                __ubrc_do_upgrade
+                return
             fi
         fi
+    fi
 
-        __ubrc_display "Checking for update..." standard notime
-        _REQUEST_OUTPUT=$(curl --silent "https://api.github.com/repos/charlyie/updatable-bashrc/tags")
-        _REMOTE_VERSION=$(echo ${_REQUEST_OUTPUT} | jq -r '.[0].name')
-        _TARBALL=$(echo ${_REQUEST_OUTPUT} | jq -r '.[0].tarball_url')
+    __ubrc_display "Checking for update..." standard notime
+    _REQUEST_OUTPUT=$(curl --silent "https://api.github.com/repos/charlyie/updatable-bashrc/tags")
+    _REMOTE_VERSION=$(echo ${_REQUEST_OUTPUT} | jq -r '.[0].name')
+    _TARBALL=$(echo ${_REQUEST_OUTPUT} | jq -r '.[0].tarball_url')
 
-        if [[ $_REMOTE_VERSION == "${UBRC_VERSION}" ]]; then
-            __ubrc_display "No update required (remote version is : ${_REMOTE_VERSION})" green
-            __ubrc_update_lock "false"
-        else
-            __ubrc_display "An update is available. Launching upgrade..." blue
-            __ubrc_do_upgrade
-            __ubrc_update_lock "true"
-        fi
-    }
+    if [[ $_REMOTE_VERSION == "${UBRC_VERSION}" ]]; then
+        __ubrc_display "No update required (remote version is : ${_REMOTE_VERSION})" green
+        __ubrc_update_lock "false"
+    else
+        __ubrc_display "An update is available. Launching upgrade..." blue
+        __ubrc_do_upgrade
+        __ubrc_update_lock "true"
+    fi
+}
 
 # Internal function : perform application upgrade
 __ubrc_do_upgrade(){
@@ -178,6 +178,7 @@ __ubrc_do_upgrade(){
 
     if [[ $_REQUEST_OUTPUT == "${UBRC_VERSION}" ]]; then
         __ubrc_display "No update required (remote version is : ${_REMOTE_VERSION})" green
+        __ubrc_update_lock "false"
     else
         __ubrc_display "> Local version  : ${UBRC_VERSION}" standard notime
         __ubrc_display "> Remote version : ${_REMOTE_VERSION}" standard notime
@@ -186,7 +187,7 @@ __ubrc_do_upgrade(){
             __ubrc_display "An update is available. Launching upgrade..." blue notime
             if [ ! -w "$UBRC_APP" ]; then
                 __ubrc_display "Current executable not writable. Please run with sudo." red
-                exit 0
+                return
             fi
 
             __ubrc_display "> Downloading from ${_TARBALL}..." standard notime
@@ -209,8 +210,10 @@ __ubrc_do_upgrade(){
             source "$UBRC_APP"
             __ubrc_display "> New installed version is :" green notime
             ubrc_version short
+            __ubrc_update_lock "false"
         else
             __ubrc_display "No update available" blue notime
+            __ubrc_update_lock "false"
         fi
     fi
 }
