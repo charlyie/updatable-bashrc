@@ -6,7 +6,7 @@
 # You are not obligated to bundle the LICENSE file with your projects as long
 # as you leave these references intact in the header comments of your source files.
 
-UBRC_VERSION="1.1.3"
+UBRC_VERSION="1.2.0"
 UBRC_VERSION_BUILD="20210823"
 UBRC_REQUIRED_PACKAGES=( "curl" "jq" )
 UBRC_UPDATE_LOCKFILE="/tmp/.updatable-bashrc.$USER.update"
@@ -28,30 +28,33 @@ ubrc_version(){
 
 # Internal function : write text with color
 __ubrc_display(){
-    WHITE="\033[0;97m"
-    RED="\033[0;31m"
-    GREEN="\033[0;32m"
-    NC="\033[0m" # No Color
-    BOLD=$(tput bold)
-    NORMAL=$(tput sgr0)
+    #If we're in a true terminal (tty)
+    if [ -t 1 ]; then
+        WHITE="\033[0;97m"
+        RED="\033[0;31m"
+        GREEN="\033[0;32m"
+        NC="\033[0m" # No Color
+        BOLD=$(tput bold)
+        NORMAL=$(tput sgr0)
 
-    COLOR_OPEN_TAG=''
-    COLOR_CLOSE_TAG=$NORMAL
-    if [[ $2 == "green" ]]; then 
-        COLOR_OPEN_TAG=$GREEN
-    elif [[ $2 == "red" ]]; then
-        COLOR_OPEN_TAG=$RED
-    elif [[ $2 == "white" ]]; then
-        COLOR_OPEN_TAG=$WHITE
-    elif [[ $2 == "standard" ]]; then
-        COLOR_OPEN_TAG=$NORMAL
+        COLOR_OPEN_TAG=''
+        COLOR_CLOSE_TAG=$NORMAL
+        if [[ $2 == "green" ]]; then 
+            COLOR_OPEN_TAG=$GREEN
+        elif [[ $2 == "red" ]]; then
+            COLOR_OPEN_TAG=$RED
+        elif [[ $2 == "white" ]]; then
+            COLOR_OPEN_TAG=$WHITE
+        elif [[ $2 == "standard" ]]; then
+            COLOR_OPEN_TAG=$NORMAL
+        fi
+        
+        STROUTPUT="${WHITE}${BOLD}[${NORMAL}Updatable-Bashrc${WHITE}${BOLD}]${NORMAL} $1"
+        if [[ $3 == "noprefix" ]]; then
+            STROUTPUT=$1
+        fi 
+        printf "${COLOR_OPEN_TAG}$STROUTPUT ${COLOR_CLOSE_TAG}\n"
     fi
-    
-    STROUTPUT="${WHITE}${BOLD}[${NORMAL}Updatable-Bashrc${WHITE}${BOLD}]${NORMAL} $1"
-    if [[ $3 == "noprefix" ]]; then
-        STROUTPUT=$1
-    fi 
-    printf "${COLOR_OPEN_TAG}$STROUTPUT ${COLOR_CLOSE_TAG}\n"
 }
 
 
@@ -138,6 +141,11 @@ ubrc_check_update(){
         return
     fi
 
+    if [ ! -w $UBRC_APP ]; then
+        __ubrc_display "Cannot perform check update, app $UBRC_APP is not writable for this user" blue
+        return
+    fi
+
     if [[ "$1" == "checklock" ]]; then 
         # Perform update verification once a day
         if [ -f ${UBRC_UPDATE_LOCKFILE} ]; then
@@ -218,18 +226,18 @@ __ubrc_do_upgrade(){
     fi
 }
 
-__ubrc_display "Configuration loaded."
+__ubrc_display "Configuration loaded"
 
 #Run System requirements check
 __ubrc_prerequisites
 
-#Run update check if needed
-ubrc_check_update checklock
-
+#Run update check if needed, and if user can upgrade the app
+if [ -w $UBRC_APP ]; then
+    ubrc_check_update checklock
+fi
 
 
 ## Content of .bashrc
-
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -254,10 +262,11 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
-
+if [[ ! -z "$TERM" ]]; then
+    case "$TERM" in
+        xterm-color) color_prompt=yes;;
+    esac
+fi
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
