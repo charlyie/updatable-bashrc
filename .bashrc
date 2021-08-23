@@ -6,10 +6,10 @@
 # You are not obligated to bundle the LICENSE file with your projects as long
 # as you leave these references intact in the header comments of your source files.
 
-UBRC_VERSION="1.1.2"
+UBRC_VERSION="1.1.3"
 UBRC_VERSION_BUILD="20210823"
 UBRC_REQUIRED_PACKAGES=( "curl" "jq" )
-UBRC_UPDATE_LOCKFILE="/tmp/.updatable-bashrc.update"
+UBRC_UPDATE_LOCKFILE="/tmp/.updatable-bashrc.$USER.update"
 UBRC_APP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 UBRC_ALIASES_APPEND="${UBRC_APP_DIR}/.aliases.ubrc"
 UBRC_FUNCTIONS_APPEND="${UBRC_APP_DIR}/.functions.ubrc"
