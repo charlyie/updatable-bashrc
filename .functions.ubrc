@@ -77,3 +77,13 @@ genpass(){
 	fi
 	head -c $pwdlength /dev/random | base64 | sed "s:[+=/]::g" | head -c $pwdlength
 }
+
+# Reset file rights to base rights
+rights(){
+    find . -type d -exec chmod 755 "{}" \;
+    find . -type f -exec chmod 644 "{}" \;
+}
+
+# Transfer a file to a short term storage service
+transfer() { if [ $# -eq 0 ]; then echo -e "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md"; return 1; fi 
+tmpfile=$( mktemp -t transferXXX ); if tty -s; then basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g'); curl --progress-bar --upload-file "$1" "https://transfer.sh/$basefile" >> $tmpfile; else curl --progress-bar --upload-file "-" "https://transfer.sh/$1" >> $tmpfile ; fi; cat $tmpfile; rm -f $tmpfile; }

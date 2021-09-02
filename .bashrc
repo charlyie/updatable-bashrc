@@ -6,14 +6,15 @@
 # You are not obligated to bundle the LICENSE file with your projects as long
 # as you leave these references intact in the header comments of your source files.
 
-UBRC_VERSION="1.2.0"
+UBRC_VERSION="1.3.0"
 UBRC_VERSION_BUILD="20210823"
 UBRC_REQUIRED_PACKAGES=( "curl" "jq" )
 UBRC_UPDATE_LOCKFILE="/tmp/.updatable-bashrc.$USER.update"
 UBRC_APP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 UBRC_ALIASES_APPEND="${UBRC_APP_DIR}/.aliases.ubrc"
 UBRC_FUNCTIONS_APPEND="${UBRC_APP_DIR}/.functions.ubrc"
-UBRC_CUSTOM_APPEND="${UBRC_APP_DIR}/.custom.bashrc"
+UBRC_CUSTOM_APPEND_EXAMPLE="${UBRC_APP_DIR}/.custom.bashrc"
+UBRC_CUSTOM_APPEND="${UBRC_APP_DIR}/.*.bashrc"
 UBRC_APP="${BASH_SOURCE[0]}"
 
 
@@ -210,8 +211,8 @@ __ubrc_do_upgrade(){
             yes |cp -r /tmp/updatable-bashrc-last-release/*/.bashrc "$UBRC_APP"
             yes |cp -r /tmp/updatable-bashrc-last-release/*/.aliases.ubrc "$UBRC_ALIASES_APPEND"
             yes |cp -r /tmp/updatable-bashrc-last-release/*/.functions.ubrc "$UBRC_FUNCTIONS_APPEND"
-            if [[ ! -f "$UBRC_CUSTOM_APPEND" ]]; then
-                cp /tmp/updatable-bashrc-last-release/*/.custom.bashrc "$UBRC_CUSTOM_APPEND"
+            if [[ ! -f "$UBRC_CUSTOM_APPEND_EXAMPLE" ]]; then
+                cp /tmp/updatable-bashrc-last-release/*/.custom.bashrc "$UBRC_CUSTOM_APPEND_EXAMPLE"
             fi
             
             rm -f $UBRC_UPDATE_LOCKFILE
@@ -338,6 +339,6 @@ if [[ -f "$UBRC_FUNCTIONS_APPEND" ]]; then
 fi
 
 # User/environment custom functions. Won't be overrided during upgrades.
-if [[ -f "$UBRC_CUSTOM_APPEND" ]]; then
-    source $UBRC_CUSTOM_APPEND
-fi
+for f in $UBRC_CUSTOM_APPEND; do
+    source $f
+done

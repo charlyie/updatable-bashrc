@@ -67,6 +67,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ### Changelog
 
+* **1.3.0** [sep 2021] : Loads local configuration with a wildcard (.*.bashrc`). New function in snippets to reset rights
 * **1.2.0** [aug 2021] : Upgrade only for writable users, no output when not in TTY mode
 * **1.1.3** [aug 2021] : Fix in lock file, 1 per user.
 * **1.1.2** [aug 2021] : Fix in lock write, and exit status.
